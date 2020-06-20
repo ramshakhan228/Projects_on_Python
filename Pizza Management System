@@ -1,0 +1,124 @@
+from sqlite3 import *
+from tkinter import *
+from tkinter import messagebox
+from tkinter import PhotoImage
+from tkinter import PhotoImage
+from PIL import ImageTk
+from PIL import Image
+#from ttk import*
+
+ 
+class Login:
+    def __init__(sf):
+        sf.c=connect("mydata.db")
+        sf.cur=sf.c.cursor()
+        try:
+            sf.cur.execute("create table staff(user varchar(50),passw varchar(50))")
+        except:
+            pass
+        sf.scr=Tk(className=" Pizza Management System")            
+        sf.f=Frame(sf.scr,bg="white")
+        sf.f.pack(fill=BOTH,expand=1)
+        img=Image.open("e:/python/pro/Pizza_3505x2344.png")
+        img=ImageTk.PhotoImage(img)
+        sf.l=Label(sf.f,image=img)
+        sf.l.place(x=0,y=0)
+        sf.l=Label(sf.f,fg='black',font=('Bodoni MT',20,'bold'),text='Username :')
+        sf.l.place(x=600,y=20)
+        sf.user=Entry(sf.f,bg='white',fg='black',font=('Arial',20))
+        sf.user.place(x=732.5,y=20)
+        sf.l1=Label(sf.f,fg='black',font=('Bodoni MT',20,'bold'),text='Password  :')
+        sf.l1.place(x=1067.5,y=20)
+        sf.passw=Entry(sf.f,bg='white',fg='black',font=('Arial',20),show='*')
+        sf.passw.place(x=1200,y=20)
+        sf.b=Button(sf.f,text="Login",bg='white',fg='black',font=('Bodoni MT',20,'bold'),cursor="heart",relief="raised",underline=0,command=lambda :sf.result("login"))
+        sf.b.place(x=1400,y=70)
+        sf.b1=Button(sf.f,text="Create a new account",bg='white',fg='black',font=('times',20,'bold','italic'),relief="groove",underline=0,command=sf.register)
+        sf.b1.place(x=700,y=70)
+
+        sf.scr.mainloop()
+    def register(sf):
+##        try:
+##            pass
+##        except:
+##            try:
+##                sf.scr1.destroy()
+##            except:
+##                pass
+        sf.l2=Label(sf.f,bg="white",height=39,width=70)
+        sf.l2.place(x=150,y=200)
+
+        
+        sf.l=Label(sf.f,bg='white',fg='black',font=('Bodoni MT',20,'bold'),text='Username* :')
+        sf.l.place(x=170,y=250)
+        sf.user=Entry(sf.f,fg='black',font=('arial',20),relief="raised")
+        sf.user.place(x=180,y=295)
+        sf.l1=Label(sf.f,bg='white',fg='black',font=('Bodoni MT',20,'bold'),text='Password* :')
+        sf.l1.place(x=172,y=340)
+        sf.passw=Entry(sf.f,fg='black',font=('arial',20),show='*',relief="raised")
+        sf.passw.place(x=182,y=385)
+        sf.l2=Label(sf.f,bg='white',fg='black',font=('Bodoni MT',20,'bold'),text='Retype password* :')
+        sf.l2.place(x=172,y=440)
+        sf.passw1=Entry(sf.f,fg='black',font=('arial',20),show='*',relief="raised")
+        sf.passw1.place(x=182,y=485)
+        sf.l3=Label(sf.f,bg='white',fg='black',font=('Bodoni MT',20,'bold'),text='E-mail* :')
+        sf.l3.place(x=172,y=540)
+        sf.passw1=Entry(sf.f,fg='black',font=('arial',20),relief="raised")
+        sf.passw1.place(x=182,y=585)
+        sf.b=Button(sf.f,text="submit",bg='white',fg='black',font=('Bodoni MT',20,'bold'),relief="raised",cursor="heart",command=lambda :sf.result("register"))
+        sf.b.place(x=310,y=700)
+        
+        
+
+            
+    def result(sf,val):
+        if val=="login":
+            try:
+                sf.username=sf.user.get()
+                sf.passd=sf.passw.get()
+                sf.scr.destroy()
+                x=sf.cur.execute("select count(*) from staff where user=%r and passw=%r"%(sf.username,sf.passd))
+                if list(x)[0][0]!=0:
+                    print("if login")
+                    sf.pg2()
+
+                    
+                else:
+                   messagebox.showinfo("Error","username/password was wrong")
+                   sf.user.delete(0,END)
+                   sf.passw.delete(0,END)
+                   
+            except:
+                pass
+        elif val=='register':
+            if sf.passw.get()==sf.passw1.get():
+                print("reg wale if k andar")
+                x=sf.cur.execute("select count(*) from staff where user=%r"%(sf.user.get()))
+                if list(x)[0][0]!=0 or len(sf.user.get())!=0:
+                    messagebox.showinfo("pizza","username allready exists")
+                    sf.register()
+                else:
+                    print("reg k else mai")
+                    sf.cur.execute("insert into staff values(%r,%r)"%(sf.user.get(),sf.passw.get()))
+                    sf.c.commit()
+                    sf.scr.destroy()
+                    sf.__init__()
+            else:
+                print("else result wala")
+                sf.scr.destroy()
+                sf.__init__()
+
+
+
+                
+                
+    def pg2(sf):
+        print("else pg2 wala")
+##        try:
+##            sf.scr.destroy()
+##        except:
+##            try:
+##                sf.scr1.destroy()
+##            except:
+##                pass
+        
